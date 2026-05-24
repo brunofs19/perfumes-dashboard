@@ -23,10 +23,9 @@ function chunk<T>(arr: T[], size: number): T[][] {
 /**
  * Quantos perfumes por prateleira, em função da largura.
  * Mobile (<640): 2 / sm (640-1024): 3 / lg (1024-1280): 4 / xl (>=1280): 5
- * Mesma escala usada no grid de relógios.
  */
 function usePerShelf() {
-  const [perShelf, setPerShelf] = useState(5); // SSR default = desktop largo
+  const [perShelf, setPerShelf] = useState(5);
   useEffect(() => {
     const compute = () => {
       const w = window.innerWidth;
@@ -45,25 +44,19 @@ function usePerShelf() {
 export default function Armario({ perfumes }: Props) {
   const [selected, setSelected] = useState<Perfume | null>(null);
   const [filters, setFilters] = useState<Filters>({
-    categoria: '',
     periodo: '',
-    ocasiao: '',
-    genero: ''
+    ocasiao: ''
   });
   const perShelf = usePerShelf();
 
   const filtered = useMemo(() => {
     return perfumes.filter((p) => {
-      if (filters.categoria && p.categoria !== filters.categoria) return false;
       if (filters.periodo && p.periodo !== filters.periodo) return false;
       if (filters.ocasiao && !p.ocasiao.includes(filters.ocasiao as any)) return false;
-      if (filters.genero && p.genero !== filters.genero) return false;
       return true;
     });
   }, [perfumes, filters]);
 
-  // Quebra em prateleiras dinâmicas; depois inverte para que o TOPO
-  // (mais elevado / mais ao fundo) seja o primeiro item — coerente com a escada.
   const shelves = useMemo(() => {
     const all = chunk(filtered, perShelf);
     return all.reverse();
@@ -76,7 +69,6 @@ export default function Armario({ perfumes }: Props) {
     <>
       <div className="mb-7">
         <FilterBar
-          perfumes={perfumes}
           filters={filters}
           onChange={setFilters}
           total={perfumes.length}
@@ -96,7 +88,6 @@ export default function Armario({ perfumes }: Props) {
             const levelFromTop = idx;
             const levelFromBottom = totalLevels - 1 - idx;
 
-            // Em mobile, não aplica offset/scale/translateZ — escada some.
             const offsetPx = isMobile ? 0 : levelFromTop * STEP_OFFSET_PX;
             const translateZ = isMobile ? 0 : -STEP_DEPTH_PX * levelFromTop;
             const scale = isMobile ? 1 : 1 - STEP_SCALE_DECAY * levelFromTop;
