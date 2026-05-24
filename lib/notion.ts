@@ -31,13 +31,40 @@ function urlValue(prop: any): string | null {
   return prop.url;
 }
 
+/**
+ * Extrai URL de um campo Files do Notion.
+ * Suporta TODOS os formatos:
+ *   - file:        upload nativo Notion (S3 assinada, expira ~1h)
+ *   - external:    link externo (ex: Google Drive, imgur)
+ *   - file_upload: novo tipo via Upload API
+ *   - Fallback recursivo: procura qualquer URL http(s) no objeto.
+ */
 function fileUrl(prop: any): string | null {
   if (!prop || prop.type !== 'files') return null;
   const first = prop.files?.[0];
   if (!first) return null;
-  // Upload no Notion → file.url (S3 assinada, expira em ~1h, ISR rebusca a cada 60s).
-  // Link externo → external.url.
-  return first.file?.url || first.external?.url || null;
+
+  // 1. Tipos conhecidos da API REST do Notion
+  if (first.file?.url) return first.file.url;
+  if (first.external?.url) return first.external.url;
+  if (first.file_upload?.url) return first.file_upload.url;
+
+  // 2. Fallback recursivo: procura qualquer string URL dentro do objeto
+  const findUrl = (obj: any, depth = 0): string | null => {
+    if (!obj || depth > 5) return null;
+    if (typeof obj === 'string') {
+      if (obj.startsWith('http://') || obj.startsWith('https://')) return obj;
+      return null;
+    }
+    if (typeof obj !== 'object') return null;
+    for (const key of Object.keys(obj)) {
+      const found = findUrl(obj[key], depth + 1);
+      if (found) return found;
+    }
+    return null;
+  };
+
+  return findUrl(first);
 }
 
 export async function fetchPerfumes(): Promise<Perfume[]> {
@@ -46,6 +73,17 @@ export async function fetchPerfumes(): Promise<Perfume[]> {
     sorts: [{ property: 'Marca', direction: 'ascending' }],
     page_size: 100
   });
+
+  // Debug: logar o primeiro perfume com Foto preenchida (só roda 1x no build/revalidate)
+  if (process.env.NODE_ENV !== 'production' || process.env.DEBUG_FOTO === '1') {
+    const withFoto = response.results.find((p: any) => {
+      const f = p.properties['Foto'];
+      return f?.files?.length > 0;
+    });
+    if (withFoto) {
+      console.log('[debug-foto] sample raw:', JSON.stringify((withFoto as any).properties['Foto'], null, 2));
+    }
+  }
 
   return response.results.map((page: any) => {
     const p = page.properties;
