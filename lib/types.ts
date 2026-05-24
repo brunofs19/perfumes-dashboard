@@ -30,5 +30,6 @@ export interface Perfume {
   dataCompra: string | null;
   valorPago: string | null;
   url: string | null;
+  foto: string | null;
   notionUrl: string;
 }

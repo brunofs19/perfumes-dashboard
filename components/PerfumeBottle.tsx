@@ -21,6 +21,38 @@ function fillRatio(nivel: Perfume['nivel']): number {
 }
 
 export default function PerfumeBottle({ perfume, size = 120 }: Props) {
+  // Modo híbrido: se houver foto carregada no Notion, renderiza a foto real.
+  // Caso contrário, faz fallback para o frasco SVG colorido pela família olfativa.
+  if (perfume.foto) {
+    const height = (size * 140) / 100;
+    return (
+      <div
+        style={{ width: size, height }}
+        className="relative flex items-end justify-center"
+      >
+        {/* Sombra projetada na prateleira */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 rounded-[50%]"
+          style={{
+            bottom: -2,
+            width: size * 0.7,
+            height: 6,
+            background: 'rgba(0,0,0,0.55)',
+            filter: 'blur(2px)'
+          }}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={perfume.foto}
+          alt={`${perfume.marca} ${perfume.nome}`}
+          loading="lazy"
+          className="relative w-full h-full object-contain"
+          style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}
+        />
+      </div>
+    );
+  }
+
   const { liquid, highlight } = liquidColor(perfume.familiaOlfativa);
   const cap = capColor(perfume.categoria);
   const shape = bottleShape(perfume.marca);

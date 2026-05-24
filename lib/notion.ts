@@ -31,6 +31,15 @@ function urlValue(prop: any): string | null {
   return prop.url;
 }
 
+function fileUrl(prop: any): string | null {
+  if (!prop || prop.type !== 'files') return null;
+  const first = prop.files?.[0];
+  if (!first) return null;
+  // Upload no Notion → file.url (S3 assinada, expira em ~1h, ISR rebusca a cada 60s).
+  // Link externo → external.url.
+  return first.file?.url || first.external?.url || null;
+}
+
 export async function fetchPerfumes(): Promise<Perfume[]> {
   const response = await notion.databases.query({
     database_id: DATABASE_ID,
@@ -58,6 +67,7 @@ export async function fetchPerfumes(): Promise<Perfume[]> {
       dataCompra: dateStart(p['Data Compra']),
       valorPago: plainText(p['Valor Pago']),
       url: urlValue(p['URL']),
+      foto: fileUrl(p['Foto']),
       notionUrl: page.url
     };
   });
