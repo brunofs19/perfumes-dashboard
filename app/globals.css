@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +7,7 @@
 :root {
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
+  color-scheme: light;
 }
 
 html, body {
@@ -14,28 +17,63 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* === ARMÁRIO CLARO === */
+/* === FUNDO CREMOSO COM PADRÃO SUTIL (mesmo modelo do relógios) === */
+.armario-bg {
+  background-color: #f8f1e1;
+  background-image:
+    radial-gradient(ellipse at top left, rgba(255, 250, 230, 0.6) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(212, 184, 120, 0.18) 0%, transparent 50%),
+    linear-gradient(135deg, #f8f1e1 0%, #ede4cc 100%);
+  position: relative;
+}
 
+.armario-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.5 0 0 0 0 0.35 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* === ARMÁRIO (moldura externa) — padding responsivo === */
 .armario-cabinet {
   position: relative;
-  padding: 28px 20px 36px;
+  padding: 12px 12px 16px;
   border-radius: 14px;
   background: linear-gradient(180deg, #f0e8d4 0%, #e0d3b8 100%);
   box-shadow:
     inset 0 0 0 2px rgba(184, 153, 104, 0.4),
     inset 0 0 0 4px rgba(255, 255, 255, 0.6),
     0 30px 60px -20px rgba(101, 67, 33, 0.25);
-  /* importante: deixar overflow visível p/ que o 3D translate não seja cortado */
   overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .armario-cabinet {
+    padding: 24px 18px 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .armario-cabinet {
+    padding: 28px 20px 36px;
+  }
 }
 
 .armario-cabinet::before {
   content: '';
   position: absolute;
-  inset: 10px;
+  inset: 6px;
   border-radius: 8px;
   border: 1px solid rgba(184, 153, 104, 0.35);
   pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .armario-cabinet::before { inset: 10px; }
 }
 
 /* Textura sutil de veios da madeira */
@@ -57,40 +95,61 @@ html, body {
   opacity: 0.7;
 }
 
-/* === FRAME COM PERSPECTIVA 3D ===
-   É aqui que o "olhar de baixo pra cima" acontece.
-   perspective define a distância da câmera virtual.
-   perspective-origin pousa o ponto de fuga próximo da base do quadro,
-   fazendo as prateleiras superiores recuarem visualmente. */
+/* === FRAME COM PERSPECTIVA 3D (apenas desktop) === */
 .armario-frame {
   position: relative;
-  padding: 40px 0 0;
+  padding: 0;
   perspective: 2200px;
   perspective-origin: 50% 95%;
   transform-style: preserve-3d;
 }
 
-/* === PRATELEIRA / DEGRAU === */
+@media (min-width: 721px) {
+  .armario-frame {
+    padding-top: 40px;
+  }
+}
 
+/* === PRATELEIRA / DEGRAU === */
 .shelf-row {
   position: relative;
-  /* Sem gap vertical: a face do degrau (.step-face) conecta uma prateleira na outra */
   margin-bottom: 0;
   transition: transform 0.5s ease, margin-left 0.4s ease;
   transform-style: preserve-3d;
-  /* o transform real (translateZ + scale) vem inline do Armario.tsx */
 }
 
 .shelf-content {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  padding: 0 14px 10px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 8px 12px;
   position: relative;
   z-index: 2;
 }
 
-/* Tampo do degrau (madeira clara — a superfície onde os frascos pousam) */
+@media (min-width: 640px) {
+  .shelf-content {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 0 12px 12px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .shelf-content {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 0 14px 12px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .shelf-content {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Tampo do degrau (madeira clara) */
 .shelf-plank {
   position: relative;
   height: 16px;
@@ -118,10 +177,7 @@ html, body {
   border-radius: 2px 2px 0 0;
 }
 
-/* === FACE VERTICAL DO DEGRAU (espelho) ===
-   Esta é a peça-chave da profundidade. É a parede escura entre o tampo de uma
-   prateleira e a próxima — é o que o olho humano lê como "altura do degrau".
-   Aparece apenas em níveis elevados; a base é o "chão" e não tem face abaixo. */
+/* === FACE VERTICAL DO DEGRAU (espelho) - apenas desktop === */
 .step-face {
   height: 44px;
   margin: 0 8px;
@@ -147,7 +203,7 @@ html, body {
     );
 }
 
-/* Iluminação dourada vinda de cima do tampo, banhando os frascos */
+/* Iluminação dourada vinda de cima do tampo */
 .step-glow {
   position: absolute;
   left: 16px;
@@ -164,7 +220,6 @@ html, body {
   );
 }
 
-/* Iluminação ambiente radial de baixo dos frascos (legado, preservado) */
 .shelf-shadow {
   position: absolute;
   left: 16px;
@@ -181,17 +236,25 @@ html, body {
   );
 }
 
-/* === SLOTS === */
-
+/* === SLOTS — aspect-square + bottle fluid (mesmo padrão dos relógios) === */
 .perfume-slot {
   cursor: pointer;
   background: transparent;
   border: none;
   outline: none;
-  min-height: 359px;
-  padding: 12px 6px;
-  border-radius: 8px;
+  padding: 10px 4px 8px;
+  border-radius: 10px;
   transition: transform 0.3s ease, background-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (min-width: 640px) {
+  .perfume-slot {
+    padding: 12px 6px;
+  }
 }
 
 .perfume-slot:hover {
@@ -203,9 +266,32 @@ html, body {
   outline-offset: 2px;
 }
 
+/* Container do frasco — proporção 5:7, escala fluida ao container */
+.bottle-wrap {
+  width: 100%;
+  max-width: 172px;
+  aspect-ratio: 5 / 7;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+
 .bottle-glow {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
   filter: drop-shadow(0 3px 5px rgba(101, 67, 33, 0.25));
   transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.bottle-glow > * {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .perfume-slot:hover .bottle-glow {
@@ -216,7 +302,7 @@ html, body {
 }
 
 .empty-slot {
-  min-height: 359px;
+  visibility: hidden;
 }
 
 .font-display { font-family: var(--font-display); font-weight: 500; }
@@ -228,24 +314,32 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #c8b894; border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: #b89968; }
 
+/* === MODAL === */
+.modal-backdrop {
+  background: rgba(74, 53, 32, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+/* === BADGES === */
+.badge-niche    { background: linear-gradient(135deg, #8a6f47, #b89968); color: #fff; }
+.badge-designer { background: linear-gradient(135deg, #6b4f30, #8a6f47); color: #fff; }
+
 /* === RESPONSIVO ===
-   No mobile não faz sentido manter a perspectiva 3D — o offset lateral
-   estouraria a viewport e a profundidade visual seria pequena demais
-   para valer a pena. Voltamos para layout vertical empilhado. */
+   No mobile (<=720px) o armário vira grid simples 2 colunas,
+   sem escada 3D — perspectiva e offsets ficam neutralizados via !important. */
 @media (max-width: 720px) {
-  .shelf-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
-  }
   .armario-frame {
     perspective: none;
-    padding-top: 10px;
   }
   .shelf-row {
     margin-left: 0 !important;
     transform: none !important;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
   }
   .step-face { display: none; }
   .step-glow { display: none; }
+  .shelf-plank {
+    height: 10px;
+    margin: 0 4px;
+  }
 }

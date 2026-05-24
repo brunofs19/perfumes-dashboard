@@ -27,7 +27,7 @@ const Pill = ({
 }) => (
   <button
     onClick={onClick}
-    className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.15em] rounded-full border transition-all whitespace-nowrap ${
+    className={`px-3 py-1.5 text-[10px] sm:text-[11px] uppercase tracking-[0.12em] sm:tracking-[0.15em] rounded-full border transition-all whitespace-nowrap ${
       active
         ? 'bg-oak-600 text-cream-50 border-oak-600 shadow-sm'
         : 'bg-white/70 text-oak-600 border-oak-300 hover:border-oak-500 hover:bg-white'
@@ -39,7 +39,7 @@ const Pill = ({
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex flex-wrap items-center gap-2">
-    <span className="text-[10px] uppercase tracking-[0.22em] text-oak-500 mr-1 min-w-[70px]">
+    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.22em] text-oak-500 mr-1 min-w-[60px] sm:min-w-[70px]">
       {label}
     </span>
     {children}
@@ -59,7 +59,7 @@ export default function FilterBar({ perfumes, filters, onChange }: Props) {
   const set = (key: keyof Filters, value: string) => onChange({ ...filters, [key]: value });
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2.5 sm:space-y-3">
       <Row label="Categoria">
         <Pill active={filters.categoria === ''} onClick={() => set('categoria', '')}>
           Todos ({counts.total})
