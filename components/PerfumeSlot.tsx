@@ -16,7 +16,7 @@ export default function PerfumeSlot({ perfume, onClick }: Props) {
       aria-label={`Ver detalhes de ${perfume.marca} ${perfume.nome}`}
     >
       <div className="bottle-glow relative">
-        <PerfumeBottle perfume={perfume} size={143} />
+        <PerfumeBottle perfume={perfume} size={172} />
       </div>
       <div className="mt-3 text-center px-1 max-w-full">
         <div className="text-[10px] uppercase tracking-[0.18em] text-oak-500 font-body truncate">
@@ -27,6 +27,9 @@ export default function PerfumeSlot({ perfume, onClick }: Props) {
         </div>
         {perfume.avaliacao && (
           <div className="text-[10px] text-champagne-600 mt-1">{perfume.avaliacao}</div>
+        )}
+        {perfume.nivel && (
+          <div className="text-[10px] text-oak-400 mt-0.5">{perfume.nivel}</div>
         )}
       </div>
     </button>

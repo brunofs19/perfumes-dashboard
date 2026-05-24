@@ -11,7 +11,7 @@ interface Props {
 }
 
 const PER_SHELF = 5;
-const STEP_OFFSET_PX = 83; // deslocamento horizontal por nível (efeito escada)
+const STEP_OFFSET_PX = 100; // deslocamento horizontal por nível (efeito escada)
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
