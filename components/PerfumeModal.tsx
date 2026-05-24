@@ -10,11 +10,11 @@ interface Props {
 }
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
-  <div className="grid grid-cols-[90px_1fr] sm:grid-cols-[110px_1fr] gap-2 sm:gap-3 py-2 border-b border-oak-200">
-    <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-oak-500 font-body pt-0.5">
+  <div className="grid grid-cols-[100px_1fr] sm:grid-cols-[120px_1fr] gap-2 sm:gap-3 py-2.5 border-b border-oak-200">
+    <div className="text-xs sm:text-sm uppercase tracking-[0.16em] sm:tracking-[0.18em] text-oak-500 font-body pt-0.5">
       {label}
     </div>
-    <div className="text-oak-800 font-body text-xs sm:text-sm">{value || '—'}</div>
+    <div className="text-oak-800 font-body text-sm sm:text-base">{value || '—'}</div>
   </div>
 );
 
@@ -61,7 +61,7 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
                 href={perfume.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 sm:mt-6 text-[11px] sm:text-xs text-oak-600 hover:text-champagne-600 underline-offset-4 hover:underline tracking-wider uppercase font-body"
+                className="mt-4 sm:mt-6 text-xs sm:text-sm text-oak-600 hover:text-champagne-600 underline-offset-4 hover:underline tracking-wider uppercase font-body"
               >
                 Site oficial ↗
               </a>
@@ -69,14 +69,14 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
           </div>
 
           <div>
-            <div className="text-[11px] sm:text-xs uppercase tracking-[0.18em] sm:tracking-[0.2em] text-oak-500 font-body">
+            <div className="text-xs sm:text-sm uppercase tracking-[0.18em] sm:tracking-[0.2em] text-oak-500 font-body">
               {perfume.marca}
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-oak-800 italic leading-tight mt-1">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-oak-800 italic leading-tight mt-1">
               {perfume.nome}
             </h2>
             {perfume.avaliacao && (
-              <div className="mt-2 text-xs sm:text-sm text-champagne-600 font-medium">
+              <div className="mt-2 text-sm sm:text-base text-champagne-600 font-medium">
                 {perfume.avaliacao}
               </div>
             )}
@@ -98,7 +98,7 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
                       {perfume.familiaOlfativa.map((f) => (
                         <span
                           key={f}
-                          className="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] bg-oak-100 border border-oak-300 text-oak-700"
+                          className="px-2.5 py-1 rounded-full text-xs sm:text-sm bg-oak-100 border border-oak-300 text-oak-700"
                         >
                           {f}
                         </span>
@@ -126,7 +126,7 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
               href={perfume.notionUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 sm:mt-5 inline-block text-[10px] sm:text-[11px] uppercase tracking-widest text-oak-400 hover:text-champagne-600 font-body"
+              className="mt-4 sm:mt-5 inline-block text-xs sm:text-sm uppercase tracking-widest text-oak-400 hover:text-champagne-600 font-body"
             >
               Editar no Notion ↗
             </a>

@@ -13,7 +13,7 @@ interface Props {
 }
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <span className="text-[10px] uppercase tracking-[0.22em] text-oak-500 font-medium mr-1">
+  <span className="text-xs sm:text-sm uppercase tracking-[0.22em] text-oak-500 font-medium mr-1">
     {children}
   </span>
 );
@@ -31,11 +31,11 @@ const StyledSelect = ({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="appearance-none bg-white/70 border border-oak-300 text-oak-700 text-[11px] sm:text-xs font-medium rounded-full px-3 py-1.5 pr-7 focus:outline-none focus:ring-2 focus:ring-champagne-500/40 hover:border-champagne-500 cursor-pointer transition max-w-[180px] sm:max-w-none truncate"
+      className="appearance-none bg-white/70 border border-oak-300 text-oak-700 text-xs sm:text-sm font-medium rounded-full px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-champagne-500/40 hover:border-champagne-500 cursor-pointer transition max-w-[200px] sm:max-w-none truncate"
     >
       {children}
     </select>
-    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-oak-500 text-[10px]">▾</span>
+    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-oak-500 text-xs">▾</span>
   </div>
 );
 
@@ -77,7 +77,7 @@ export default function FilterBar({ filters, onChange, total, visible }: Props) 
         {hasActiveFilter && (
           <button
             onClick={() => onChange({ periodo: '', ocasiao: '' })}
-            className="text-[10px] uppercase tracking-[0.18em] text-oak-500 hover:text-oak-800 underline-offset-2 hover:underline ml-1"
+            className="text-xs sm:text-sm uppercase tracking-[0.18em] text-oak-500 hover:text-oak-800 underline-offset-2 hover:underline ml-1"
             aria-label="Limpar todos os filtros"
           >
             Limpar
@@ -85,7 +85,7 @@ export default function FilterBar({ filters, onChange, total, visible }: Props) 
         )}
       </div>
 
-      <div className="text-[11px] uppercase tracking-[0.2em] text-oak-500 font-medium">
+      <div className="text-xs sm:text-sm uppercase tracking-[0.2em] text-oak-500 font-medium">
         {visible === total ? `${total} fragrâncias` : `${visible} de ${total} fragrâncias`}
       </div>
     </div>
