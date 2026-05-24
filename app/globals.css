@@ -18,13 +18,15 @@ html, body {
 
 .armario-cabinet {
   position: relative;
-  padding: 28px 20px;
+  padding: 28px 20px 36px;
   border-radius: 14px;
   background: linear-gradient(180deg, #f0e8d4 0%, #e0d3b8 100%);
   box-shadow:
     inset 0 0 0 2px rgba(184, 153, 104, 0.4),
     inset 0 0 0 4px rgba(255, 255, 255, 0.6),
     0 30px 60px -20px rgba(101, 67, 33, 0.25);
+  /* importante: deixar overflow visível p/ que o 3D translate não seja cortado */
+  overflow: visible;
 }
 
 .armario-cabinet::before {
@@ -55,18 +57,28 @@ html, body {
   opacity: 0.7;
 }
 
+/* === FRAME COM PERSPECTIVA 3D ===
+   É aqui que o "olhar de baixo pra cima" acontece.
+   perspective define a distância da câmera virtual.
+   perspective-origin pousa o ponto de fuga próximo da base do quadro,
+   fazendo as prateleiras superiores recuarem visualmente. */
 .armario-frame {
   position: relative;
-  padding: 12px 0 0;
+  padding: 40px 0 0;
+  perspective: 2200px;
+  perspective-origin: 50% 95%;
+  transform-style: preserve-3d;
 }
 
-/* === PRATELEIRAS EM ESCADA === */
+/* === PRATELEIRA / DEGRAU === */
 
 .shelf-row {
   position: relative;
-  margin-bottom: 26px;
-  /* O offset horizontal é aplicado inline via style — efeito escada */
-  transition: margin-left 0.4s ease;
+  /* Sem gap vertical: a face do degrau (.step-face) conecta uma prateleira na outra */
+  margin-bottom: 0;
+  transition: transform 0.5s ease, margin-left 0.4s ease;
+  transform-style: preserve-3d;
+  /* o transform real (translateZ + scale) vem inline do Armario.tsx */
 }
 
 .shelf-content {
@@ -78,24 +90,16 @@ html, body {
   z-index: 2;
 }
 
-@media (max-width: 720px) {
-  .shelf-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
-  }
-}
-
-/* Tábua de madeira da prateleira */
+/* Tampo do degrau (madeira clara — a superfície onde os frascos pousam) */
 .shelf-plank {
   position: relative;
-  height: 14px;
-  border-radius: 2px;
+  height: 16px;
+  border-radius: 2px 2px 0 0;
   background:
-    linear-gradient(180deg, #c8b894 0%, #a88a5c 50%, #8a6f47 100%);
+    linear-gradient(180deg, #d4c298 0%, #b89e6f 50%, #957a4f 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 240, 200, 0.55),
-    inset 0 -2px 4px rgba(74, 53, 32, 0.4),
-    0 4px 8px rgba(74, 53, 32, 0.25);
+    inset 0 1px 0 rgba(255, 240, 200, 0.7),
+    inset 0 -2px 4px rgba(74, 53, 32, 0.4);
   margin: 0 8px;
 }
 
@@ -107,32 +111,60 @@ html, body {
     repeating-linear-gradient(
       90deg,
       transparent 0px,
-      transparent 20px,
-      rgba(74, 53, 32, 0.08) 20px,
-      rgba(74, 53, 32, 0.08) 21px
+      transparent 22px,
+      rgba(74, 53, 32, 0.08) 22px,
+      rgba(74, 53, 32, 0.08) 23px
     );
-  border-radius: 2px;
+  border-radius: 2px 2px 0 0;
 }
 
-/* Marca de "degrau" no início de cada prateleira elevada */
-.shelf-plank::after {
+/* === FACE VERTICAL DO DEGRAU (espelho) ===
+   Esta é a peça-chave da profundidade. É a parede escura entre o tampo de uma
+   prateleira e a próxima — é o que o olho humano lê como "altura do degrau".
+   Aparece apenas em níveis elevados; a base é o "chão" e não tem face abaixo. */
+.step-face {
+  height: 44px;
+  margin: 0 8px;
+  position: relative;
+  background:
+    linear-gradient(180deg, #6b4f30 0%, #4a3520 60%, #2c1e10 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 160, 0.18),
+    0 6px 10px -3px rgba(40, 25, 10, 0.45);
+}
+
+.step-face::before {
   content: '';
   position: absolute;
-  left: -2px;
-  bottom: -10px;
-  width: 8px;
-  height: 14px;
-  background: linear-gradient(90deg, #6b4f30 0%, #8a6f47 100%);
-  border-radius: 0 0 0 4px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 40px,
+      rgba(255, 220, 160, 0.05) 40px,
+      rgba(255, 220, 160, 0.05) 41px
+    );
 }
 
-.shelf-row.is-elevated .shelf-plank::after {
-  opacity: 1;
+/* Iluminação dourada vinda de cima do tampo, banhando os frascos */
+.step-glow {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: -12px;
+  height: 36px;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(232, 200, 120, 0.32) 0%,
+    rgba(232, 200, 120, 0.1) 35%,
+    transparent 70%
+  );
 }
 
-/* Iluminação dourada por baixo da prateleira */
+/* Iluminação ambiente radial de baixo dos frascos (legado, preservado) */
 .shelf-shadow {
   position: absolute;
   left: 16px;
@@ -143,9 +175,9 @@ html, body {
   z-index: 1;
   background: radial-gradient(
     ellipse at 50% 100%,
-    rgba(232, 200, 120, 0.22) 0%,
-    rgba(232, 200, 120, 0.08) 35%,
-    transparent 65%
+    rgba(232, 200, 120, 0.18) 0%,
+    rgba(232, 200, 120, 0.06) 40%,
+    transparent 70%
   );
 }
 
@@ -195,3 +227,25 @@ html, body {
 ::-webkit-scrollbar-track { background: #f0e8d4; }
 ::-webkit-scrollbar-thumb { background: #c8b894; border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: #b89968; }
+
+/* === RESPONSIVO ===
+   No mobile não faz sentido manter a perspectiva 3D — o offset lateral
+   estouraria a viewport e a profundidade visual seria pequena demais
+   para valer a pena. Voltamos para layout vertical empilhado. */
+@media (max-width: 720px) {
+  .shelf-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+  }
+  .armario-frame {
+    perspective: none;
+    padding-top: 10px;
+  }
+  .shelf-row {
+    margin-left: 0 !important;
+    transform: none !important;
+    margin-bottom: 20px;
+  }
+  .step-face { display: none; }
+  .step-glow { display: none; }
+}

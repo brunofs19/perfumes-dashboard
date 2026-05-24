@@ -11,7 +11,9 @@ interface Props {
 }
 
 const PER_SHELF = 5;
-const STEP_OFFSET_PX = 100; // deslocamento horizontal por nível (efeito escada)
+const STEP_OFFSET_PX = 90;   // deslocamento horizontal por nível
+const STEP_DEPTH_PX = 130;   // recuo Z (profundidade) por nível
+const STEP_SCALE_DECAY = 0.035; // redução de escala por nível (afastamento)
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
@@ -38,11 +40,10 @@ export default function Armario({ perfumes }: Props) {
     });
   }, [perfumes, filters]);
 
-  // Quebra em prateleiras de 5; o ÚLTIMO chunk é a prateleira da BASE
-  // e os anteriores são níveis acima — assim a escada visualmente "sobe"
+  // Quebra em prateleiras de 5; depois inverte para que o TOPO (mais elevado / mais ao fundo)
+  // seja o primeiro item renderizado e a BASE seja o último — coerente com a escada visual.
   const shelves = useMemo(() => {
     const all = chunk(filtered, PER_SHELF);
-    // Inverter para renderizar do topo (mais elevada) para a base
     return all.reverse();
   }, [filtered]);
 
@@ -67,21 +68,33 @@ export default function Armario({ perfumes }: Props) {
           )}
 
           {shelves.map((row, idx) => {
-            // O nível mais elevado é o primeiro (idx=0); o mais baixo é o último
+            // idx 0 = topo (mais ao fundo). idx maior = mais à frente.
             const levelFromTop = idx;
             const levelFromBottom = totalLevels - 1 - idx;
-            // Offset cresce do topo pro fundo: topo desloca mais à direita,
-            // base fica alinhada à esquerda (referência do "chão")
+
+            // Topo é o mais deslocado lateralmente; base fica alinhada (chão).
             const offsetPx = levelFromTop * STEP_OFFSET_PX;
+            // Topo afasta no Z (negativo); base fica em z=0 (à frente).
+            const translateZ = -STEP_DEPTH_PX * levelFromTop;
+            // Topo encolhe sutilmente; base mantém escala 1.
+            const scale = 1 - STEP_SCALE_DECAY * levelFromTop;
+
             const isElevated = levelFromBottom > 0;
 
             return (
               <div
                 key={idx}
                 className={`shelf-row ${isElevated ? 'is-elevated' : ''}`}
-                style={{ marginLeft: `${offsetPx}px` }}
+                style={{
+                  marginLeft: `${offsetPx}px`,
+                  transform: `translateZ(${translateZ}px) scale(${scale})`,
+                  transformOrigin: '50% 100%',
+                  // base (levelFromBottom alto) deve ficar por cima na pilha
+                  zIndex: levelFromBottom,
+                }}
                 aria-label={`Prateleira nível ${levelFromBottom + 1} de ${totalLevels}`}
               >
+                <div className="step-glow" aria-hidden="true" />
                 <div className="shelf-content">
                   {row.map((p) => (
                     <PerfumeSlot key={p.id} perfume={p} onClick={() => setSelected(p)} />
@@ -91,8 +104,9 @@ export default function Armario({ perfumes }: Props) {
                       <div key={`empty-${i}`} className="empty-slot" />
                     ))}
                 </div>
-                <div className="shelf-plank" />
-                <div className="shelf-shadow" />
+                <div className="shelf-plank" aria-hidden="true" />
+                {isElevated && <div className="step-face" aria-hidden="true" />}
+                <div className="shelf-shadow" aria-hidden="true" />
               </div>
             );
           })}
