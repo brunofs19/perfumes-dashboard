@@ -10,11 +10,11 @@ interface Props {
 }
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
-  <div className="grid grid-cols-[110px_1fr] gap-3 py-2 border-b border-mahogany-700/40">
-    <div className="text-[11px] uppercase tracking-[0.18em] text-champagne-500 font-body pt-0.5">
+  <div className="grid grid-cols-[110px_1fr] gap-3 py-2 border-b border-oak-200">
+    <div className="text-[11px] uppercase tracking-[0.18em] text-oak-500 font-body pt-0.5">
       {label}
     </div>
-    <div className="text-cream-50 font-body text-sm">{value || '—'}</div>
+    <div className="text-oak-800 font-body text-sm">{value || '—'}</div>
   </div>
 );
 
@@ -33,47 +33,46 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-mahogany-900/85 backdrop-blur-sm px-4 py-8"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-oak-800/40 backdrop-blur-sm px-4 py-8"
       onClick={onClose}
     >
       <div
-        className="relative max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-to-b from-mahogany-800 to-mahogany-900 border border-champagne-500/30 rounded-lg shadow-2xl"
+        className="relative max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-gradient-to-b from-cream-50 to-cream-100 border border-oak-300 rounded-xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-mahogany-700/80 text-cream-50 hover:bg-mahogany-600 transition-colors flex items-center justify-center"
+          className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-oak-200 text-oak-700 hover:bg-oak-300 transition-colors flex items-center justify-center text-lg"
           aria-label="Fechar"
         >
           ×
         </button>
 
         <div className="grid md:grid-cols-[1fr_1.4fr] gap-6 p-6">
-          {/* Frasco grande */}
-          <div className="flex flex-col items-center justify-center bg-mahogany-900/60 rounded-md p-6 border border-mahogany-700/50">
+          {/* Frasco grande sobre fundo cremoso */}
+          <div className="flex flex-col items-center justify-center bg-cream-200/60 rounded-lg p-6 border border-oak-200">
             <PerfumeBottle perfume={perfume} size={200} />
             {perfume.url && (
               <a
                 href={perfume.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 text-xs text-champagne-400 hover:text-champagne-500 underline-offset-4 hover:underline tracking-wider uppercase font-body"
+                className="mt-6 text-xs text-oak-600 hover:text-champagne-600 underline-offset-4 hover:underline tracking-wider uppercase font-body"
               >
                 Site oficial ↗
               </a>
             )}
           </div>
 
-          {/* Detalhes */}
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-champagne-500 font-body">
+            <div className="text-xs uppercase tracking-[0.2em] text-oak-500 font-body">
               {perfume.marca}
             </div>
-            <h2 className="font-display text-3xl md:text-4xl text-cream-50 italic leading-tight mt-1">
+            <h2 className="font-display text-3xl md:text-4xl text-oak-800 italic leading-tight mt-1">
               {perfume.nome}
             </h2>
             {perfume.avaliacao && (
-              <div className="mt-2 text-sm text-champagne-400">{perfume.avaliacao}</div>
+              <div className="mt-2 text-sm text-champagne-600 font-medium">{perfume.avaliacao}</div>
             )}
 
             <div className="mt-5">
@@ -93,7 +92,7 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
                       {perfume.familiaOlfativa.map((f) => (
                         <span
                           key={f}
-                          className="px-2 py-0.5 rounded-full text-[11px] bg-mahogany-700/60 border border-champagne-500/20 text-cream-50"
+                          className="px-2 py-0.5 rounded-full text-[11px] bg-oak-100 border border-oak-300 text-oak-700"
                         >
                           {f}
                         </span>
@@ -121,7 +120,7 @@ export default function PerfumeModal({ perfume, onClose }: Props) {
               href={perfume.notionUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-block text-[11px] uppercase tracking-widest text-mahogany-400 hover:text-champagne-500 font-body"
+              className="mt-5 inline-block text-[11px] uppercase tracking-widest text-oak-400 hover:text-champagne-600 font-body"
             >
               Editar no Notion ↗
             </a>

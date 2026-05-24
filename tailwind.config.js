@@ -4,22 +4,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        mahogany: {
-          900: '#1a0d07',
-          800: '#2a1610',
-          700: '#3d2419',
-          600: '#523222',
-          500: '#6b4226',
-          400: '#8b5a3c'
+        // Paleta CLARA — vitrine de joalheria / armário carvalho claro
+        oak: {
+          50:  '#faf6ed',
+          100: '#f0e8d4',
+          200: '#e0d3b8',
+          300: '#c8b894',
+          400: '#b89968',
+          500: '#8a6f47',
+          600: '#6b4f30',
+          700: '#4a3520',
+          800: '#3d2a18',
         },
         champagne: {
-          400: '#d9b779',
-          500: '#c9a875',
-          600: '#a88a5c'
+          300: '#f0d9a8',
+          400: '#e8c878',
+          500: '#d4b878',
+          600: '#b89968',
         },
         cream: {
-          50: '#fdf6e8',
-          100: '#f5ead2'
+          50:  '#fdfaf3',
+          100: '#f5f0e6',
+          200: '#ede4d0',
         }
       },
       fontFamily: {

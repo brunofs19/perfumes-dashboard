@@ -7,72 +7,73 @@
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
-html,
-body {
-  background: #0f0805;
-  color: #fdf6e8;
+html, body {
+  background: #faf6ed;
+  color: #3d2a18;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 
-/* === ARMÁRIO === */
+/* === ARMÁRIO CLARO === */
 
 .armario-cabinet {
   position: relative;
-  padding: 24px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #1a0d07 0%, #2a1610 100%);
+  padding: 28px 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f0e8d4 0%, #e0d3b8 100%);
   box-shadow:
-    inset 0 0 0 2px rgba(201, 168, 117, 0.15),
-    inset 0 0 0 4px rgba(0, 0, 0, 0.5),
-    0 30px 80px -20px rgba(0, 0, 0, 0.8);
+    inset 0 0 0 2px rgba(184, 153, 104, 0.4),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.6),
+    0 30px 60px -20px rgba(101, 67, 33, 0.25);
 }
 
 .armario-cabinet::before {
   content: '';
   position: absolute;
-  inset: 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(201, 168, 117, 0.18);
+  inset: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(184, 153, 104, 0.35);
   pointer-events: none;
 }
 
-.armario-frame {
-  position: relative;
-  padding: 16px 8px 0;
-}
-
-/* Textura sutil de madeira no fundo do armário */
+/* Textura sutil de veios da madeira */
 .armario-cabinet::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 12px;
+  border-radius: 14px;
   pointer-events: none;
   background:
     repeating-linear-gradient(
       90deg,
       transparent 0px,
-      transparent 3px,
-      rgba(0, 0, 0, 0.04) 3px,
-      rgba(0, 0, 0, 0.04) 4px
+      transparent 4px,
+      rgba(139, 95, 47, 0.04) 4px,
+      rgba(139, 95, 47, 0.04) 5px
     );
-  mix-blend-mode: overlay;
-  opacity: 0.6;
+  mix-blend-mode: multiply;
+  opacity: 0.7;
 }
 
-/* === PRATELEIRAS === */
+.armario-frame {
+  position: relative;
+  padding: 12px 0 0;
+}
+
+/* === PRATELEIRAS EM ESCADA === */
 
 .shelf-row {
   position: relative;
-  margin-bottom: 22px;
+  margin-bottom: 26px;
+  /* O offset horizontal é aplicado inline via style — efeito escada */
+  transition: margin-left 0.4s ease;
 }
 
 .shelf-content {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 0 16px 12px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 0 14px 10px;
   position: relative;
   z-index: 2;
 }
@@ -80,6 +81,7 @@ body {
 @media (max-width: 720px) {
   .shelf-content {
     grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
   }
 }
 
@@ -89,11 +91,11 @@ body {
   height: 14px;
   border-radius: 2px;
   background:
-    linear-gradient(180deg, #6b4226 0%, #3d2419 50%, #2a1610 100%);
+    linear-gradient(180deg, #c8b894 0%, #a88a5c 50%, #8a6f47 100%);
   box-shadow:
-    inset 0 1px 0 rgba(217, 183, 121, 0.35),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.5),
-    0 4px 8px rgba(0, 0, 0, 0.4);
+    inset 0 1px 0 rgba(255, 240, 200, 0.55),
+    inset 0 -2px 4px rgba(74, 53, 32, 0.4),
+    0 4px 8px rgba(74, 53, 32, 0.25);
   margin: 0 8px;
 }
 
@@ -105,11 +107,29 @@ body {
     repeating-linear-gradient(
       90deg,
       transparent 0px,
-      transparent 18px,
-      rgba(0, 0, 0, 0.12) 18px,
-      rgba(0, 0, 0, 0.12) 19px
+      transparent 20px,
+      rgba(74, 53, 32, 0.08) 20px,
+      rgba(74, 53, 32, 0.08) 21px
     );
   border-radius: 2px;
+}
+
+/* Marca de "degrau" no início de cada prateleira elevada */
+.shelf-plank::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  bottom: -10px;
+  width: 8px;
+  height: 14px;
+  background: linear-gradient(90deg, #6b4f30 0%, #8a6f47 100%);
+  border-radius: 0 0 0 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shelf-row.is-elevated .shelf-plank::after {
+  opacity: 1;
 }
 
 /* Iluminação dourada por baixo da prateleira */
@@ -123,9 +143,9 @@ body {
   z-index: 1;
   background: radial-gradient(
     ellipse at 50% 100%,
-    rgba(217, 183, 121, 0.18) 0%,
-    rgba(217, 183, 121, 0.05) 30%,
-    transparent 60%
+    rgba(232, 200, 120, 0.22) 0%,
+    rgba(232, 200, 120, 0.08) 35%,
+    transparent 65%
   );
 }
 
@@ -136,36 +156,42 @@ body {
   background: transparent;
   border: none;
   outline: none;
-  min-height: 220px;
+  min-height: 230px;
+  padding: 12px 6px;
+  border-radius: 8px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.perfume-slot:hover {
+  background-color: rgba(255, 250, 230, 0.6);
 }
 
 .perfume-slot:focus-visible {
-  outline: 1px solid rgba(217, 183, 121, 0.6);
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline: 1px solid rgba(184, 153, 104, 0.7);
+  outline-offset: 2px;
 }
 
 .bottle-glow {
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
-  transition: filter 0.3s ease;
+  filter: drop-shadow(0 3px 5px rgba(101, 67, 33, 0.25));
+  transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .perfume-slot:hover .bottle-glow {
+  transform: translateY(-4px);
   filter:
-    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 0 12px rgba(217, 183, 121, 0.4));
+    drop-shadow(0 6px 10px rgba(101, 67, 33, 0.3))
+    drop-shadow(0 0 14px rgba(232, 200, 120, 0.5));
 }
 
 .empty-slot {
-  min-height: 220px;
+  min-height: 230px;
 }
 
-/* Tipografia */
-.font-display {
-  font-family: var(--font-display);
-  font-weight: 500;
-}
+.font-display { font-family: var(--font-display); font-weight: 500; }
+.font-body { font-family: var(--font-body); }
 
-.font-body {
-  font-family: var(--font-body);
-}
+/* Scrollbar clara */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #f0e8d4; }
+::-webkit-scrollbar-thumb { background: #c8b894; border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: #b89968; }

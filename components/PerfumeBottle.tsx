@@ -37,7 +37,7 @@ export default function PerfumeBottle({ perfume, size = 120 }: Props) {
             bottom: -2,
             width: size * 0.7,
             height: 6,
-            background: 'rgba(0,0,0,0.55)',
+            background: 'rgba(101, 67, 33, 0.4)',
             filter: 'blur(2px)'
           }}
         />
@@ -47,7 +47,7 @@ export default function PerfumeBottle({ perfume, size = 120 }: Props) {
           alt={`${perfume.marca} ${perfume.nome}`}
           loading="lazy"
           className="relative w-full h-full object-contain"
-          style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }}
+          style={{ filter: 'drop-shadow(0 4px 6px rgba(101, 67, 33, 0.35))' }}
         />
       </div>
     );
@@ -133,7 +133,7 @@ export default function PerfumeBottle({ perfume, size = 120 }: Props) {
       </defs>
 
       {/* Sombra projetada na prateleira */}
-      <ellipse cx="50" cy="138" rx="34" ry="3" fill="#000" opacity="0.45" />
+      <ellipse cx="50" cy="138" rx="34" ry="3" fill="#4a3520" opacity="0.32" />
 
       {/* Corpo do frasco (vidro vazio) */}
       <path d={s.bodyD} fill="#000" opacity="0.18" />

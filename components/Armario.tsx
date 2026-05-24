@@ -10,7 +10,8 @@ interface Props {
   perfumes: Perfume[];
 }
 
-const PER_SHELF_DESKTOP = 4;
+const PER_SHELF = 5;
+const STEP_OFFSET_PX = 64; // deslocamento horizontal por nível (efeito escada)
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
@@ -37,41 +38,64 @@ export default function Armario({ perfumes }: Props) {
     });
   }, [perfumes, filters]);
 
-  const shelves = useMemo(() => chunk(filtered, PER_SHELF_DESKTOP), [filtered]);
+  // Quebra em prateleiras de 5; o ÚLTIMO chunk é a prateleira da BASE
+  // e os anteriores são níveis acima — assim a escada visualmente "sobe"
+  const shelves = useMemo(() => {
+    const all = chunk(filtered, PER_SHELF);
+    // Inverter para renderizar do topo (mais elevada) para a base
+    return all.reverse();
+  }, [filtered]);
+
+  const totalLevels = shelves.length;
 
   return (
     <>
-      <div className="mb-6">
+      <div className="mb-7">
         <FilterBar perfumes={perfumes} filters={filters} onChange={setFilters} />
-        <div className="mt-3 text-[11px] uppercase tracking-[0.2em] text-champagne-600">
+        <div className="mt-4 text-[11px] uppercase tracking-[0.22em] text-oak-500 font-body">
           Exibindo {filtered.length} de {perfumes.length} perfumes
+          {totalLevels > 1 && <span className="ml-3 text-oak-400">· {totalLevels} níveis</span>}
         </div>
       </div>
 
       <div className="armario-cabinet">
         <div className="armario-frame">
           {shelves.length === 0 && (
-            <div className="text-center py-16 text-champagne-500 italic font-display">
+            <div className="text-center py-16 text-oak-500 italic font-display text-xl">
               Nenhum perfume corresponde aos filtros.
             </div>
           )}
 
-          {shelves.map((row, idx) => (
-            <div key={idx} className="shelf-row">
-              <div className="shelf-content">
-                {row.map((p) => (
-                  <PerfumeSlot key={p.id} perfume={p} onClick={() => setSelected(p)} />
-                ))}
-                {/* Preenche slots vazios para manter alinhamento na última prateleira */}
-                {row.length < PER_SHELF_DESKTOP &&
-                  Array.from({ length: PER_SHELF_DESKTOP - row.length }).map((_, i) => (
-                    <div key={`empty-${i}`} className="empty-slot" />
+          {shelves.map((row, idx) => {
+            // O nível mais elevado é o primeiro (idx=0); o mais baixo é o último
+            const levelFromTop = idx;
+            const levelFromBottom = totalLevels - 1 - idx;
+            // Offset cresce do topo pro fundo: topo desloca mais à direita,
+            // base fica alinhada à esquerda (referência do "chão")
+            const offsetPx = levelFromTop * STEP_OFFSET_PX;
+            const isElevated = levelFromBottom > 0;
+
+            return (
+              <div
+                key={idx}
+                className={`shelf-row ${isElevated ? 'is-elevated' : ''}`}
+                style={{ marginLeft: `${offsetPx}px` }}
+                aria-label={`Prateleira nível ${levelFromBottom + 1} de ${totalLevels}`}
+              >
+                <div className="shelf-content">
+                  {row.map((p) => (
+                    <PerfumeSlot key={p.id} perfume={p} onClick={() => setSelected(p)} />
                   ))}
+                  {row.length < PER_SHELF &&
+                    Array.from({ length: PER_SHELF - row.length }).map((_, i) => (
+                      <div key={`empty-${i}`} className="empty-slot" />
+                    ))}
+                </div>
+                <div className="shelf-plank" />
+                <div className="shelf-shadow" />
               </div>
-              <div className="shelf-plank" />
-              <div className="shelf-shadow" />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
