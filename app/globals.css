@@ -156,7 +156,7 @@ html, body {
   background: transparent;
   border: none;
   outline: none;
-  min-height: 230px;
+  min-height: 299px;
   padding: 12px 6px;
   border-radius: 8px;
   transition: transform 0.3s ease, background-color 0.3s ease;
@@ -184,7 +184,7 @@ html, body {
 }
 
 .empty-slot {
-  min-height: 230px;
+  min-height: 299px;
 }
 
 .font-display { font-family: var(--font-display); font-weight: 500; }
