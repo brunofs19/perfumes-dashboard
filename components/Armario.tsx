@@ -75,13 +75,13 @@ export default function Armario({ perfumes }: Props) {
   return (
     <>
       <div className="mb-7">
-        <FilterBar perfumes={perfumes} filters={filters} onChange={setFilters} />
-        <div className="mt-4 text-[11px] uppercase tracking-[0.22em] text-oak-500 font-body">
-          Exibindo {filtered.length} de {perfumes.length} perfumes
-          {totalLevels > 1 && !isMobile && (
-            <span className="ml-3 text-oak-400">· {totalLevels} níveis</span>
-          )}
-        </div>
+        <FilterBar
+          perfumes={perfumes}
+          filters={filters}
+          onChange={setFilters}
+          total={perfumes.length}
+          visible={filtered.length}
+        />
       </div>
 
       <div className="armario-cabinet mb-8">
