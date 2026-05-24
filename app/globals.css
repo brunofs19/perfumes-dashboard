@@ -76,7 +76,6 @@ html, body {
   .armario-cabinet::before { inset: 10px; }
 }
 
-/* Textura sutil de veios da madeira */
 .armario-cabinet::after {
   content: '';
   position: absolute;
@@ -110,7 +109,7 @@ html, body {
   }
 }
 
-/* === PRATELEIRA / DEGRAU === */
+/* === PRATELEIRA === */
 .shelf-row {
   position: relative;
   margin-bottom: 0;
@@ -149,7 +148,7 @@ html, body {
   }
 }
 
-/* Tampo do degrau (madeira clara) */
+/* Tampo do degrau */
 .shelf-plank {
   position: relative;
   height: 16px;
@@ -177,7 +176,7 @@ html, body {
   border-radius: 2px 2px 0 0;
 }
 
-/* === FACE VERTICAL DO DEGRAU (espelho) - apenas desktop === */
+/* === FACE VERTICAL DO DEGRAU (desktop only) === */
 .step-face {
   height: 44px;
   margin: 0 8px;
@@ -203,7 +202,6 @@ html, body {
     );
 }
 
-/* Iluminação dourada vinda de cima do tampo */
 .step-glow {
   position: absolute;
   left: 16px;
@@ -236,7 +234,7 @@ html, body {
   );
 }
 
-/* === SLOTS — aspect-square + bottle fluid (mesmo padrão dos relógios) === */
+/* === SLOTS — altura fixa do frasco (DEFENSIVO, sem aspect-ratio) === */
 .perfume-slot {
   cursor: pointer;
   background: transparent;
@@ -266,19 +264,29 @@ html, body {
   outline-offset: 2px;
 }
 
-/* Container do frasco — proporção 5:7, escala fluida ao container */
+/* Container do frasco — ALTURA FIXA em px por breakpoint (no aspect-ratio quirks) */
 .bottle-wrap {
   width: 100%;
-  max-width: 172px;
-  aspect-ratio: 5 / 7;
+  height: 150px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   position: relative;
 }
 
+@media (min-width: 640px) {
+  .bottle-wrap { height: 170px; }
+}
+
+@media (min-width: 1024px) {
+  .bottle-wrap { height: 190px; }
+}
+
+@media (min-width: 1280px) {
+  .bottle-wrap { height: 200px; }
+}
+
 .bottle-glow {
-  width: 100%;
   height: 100%;
   display: flex;
   align-items: flex-end;
@@ -287,11 +295,14 @@ html, body {
   transition: filter 0.3s ease, transform 0.3s ease;
 }
 
-.bottle-glow > * {
-  width: 100% !important;
-  height: 100% !important;
+/* Img e SVG dentro do bottle-glow ocupam altura total, largura proporcional */
+.bottle-glow > img,
+.bottle-glow > svg {
+  height: 100%;
+  width: auto;
   max-width: 100%;
-  max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .perfume-slot:hover .bottle-glow {
@@ -308,7 +319,7 @@ html, body {
 .font-display { font-family: var(--font-display); font-weight: 500; }
 .font-body { font-family: var(--font-body); }
 
-/* Scrollbar clara */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #f0e8d4; }
 ::-webkit-scrollbar-thumb { background: #c8b894; border-radius: 5px; }
@@ -320,13 +331,7 @@ html, body {
   backdrop-filter: blur(6px);
 }
 
-/* === BADGES === */
-.badge-niche    { background: linear-gradient(135deg, #8a6f47, #b89968); color: #fff; }
-.badge-designer { background: linear-gradient(135deg, #6b4f30, #8a6f47); color: #fff; }
-
-/* === RESPONSIVO ===
-   No mobile (<=720px) o armário vira grid simples 2 colunas,
-   sem escada 3D — perspectiva e offsets ficam neutralizados via !important. */
+/* === RESPONSIVO MOBILE === */
 @media (max-width: 720px) {
   .armario-frame {
     perspective: none;

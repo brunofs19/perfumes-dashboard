@@ -6,13 +6,12 @@ import { liquidColor, bottleShape, capColor } from '@/lib/bottleStyles';
 interface Props {
   perfume: Perfume;
   /**
-   * Tamanho em pixels. Se omitido, o frasco preenche o container pai (width: 100%).
-   * Use o `size` apenas quando precisar de dimensão fixa (modal, share card).
+   * Tamanho em pixels. Se omitido, o frasco preenche o container pai
+   * (altura herdada de .bottle-glow via CSS).
    */
   size?: number;
 }
 
-// Mapa de fill level do líquido baseado em Nível
 function fillRatio(nivel: Perfume['nivel']): number {
   switch (nivel) {
     case '🟢 Cheio': return 0.92;
@@ -27,32 +26,21 @@ function fillRatio(nivel: Perfume['nivel']): number {
 export default function PerfumeBottle({ perfume, size }: Props) {
   const isFluid = size === undefined;
 
-  // Modo híbrido: se houver foto carregada no Notion, renderiza a foto real.
+  // ===== MODO FOTO REAL =====
   if (perfume.foto) {
     if (isFluid) {
+      // Img direta, sem wrapper. CSS de .bottle-glow > img cuida do tamanho.
       return (
-        <div className="relative w-full h-full flex items-end justify-center">
-          <div
-            className="absolute left-1/2 -translate-x-1/2 rounded-[50%]"
-            style={{
-              bottom: -2,
-              width: '70%',
-              height: 6,
-              background: 'rgba(101, 67, 33, 0.4)',
-              filter: 'blur(2px)'
-            }}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={perfume.foto}
-            alt={`${perfume.marca} ${perfume.nome}`}
-            loading="lazy"
-            className="relative max-w-full max-h-full object-contain"
-            style={{ filter: 'drop-shadow(0 4px 6px rgba(101, 67, 33, 0.35))' }}
-          />
-        </div>
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={perfume.foto}
+          alt={`${perfume.marca} ${perfume.nome}`}
+          loading="lazy"
+          style={{ filter: 'drop-shadow(0 4px 6px rgba(101, 67, 33, 0.35))' }}
+        />
       );
     }
+    // Modo fixed size (modal)
     const height = (size! * 140) / 100;
     return (
       <div
@@ -81,6 +69,7 @@ export default function PerfumeBottle({ perfume, size }: Props) {
     );
   }
 
+  // ===== MODO SVG (sem foto) =====
   const { liquid, highlight } = liquidColor(perfume.familiaOlfativa);
   const cap = capColor(perfume.categoria);
   const shape = bottleShape(perfume.marca);
@@ -126,9 +115,9 @@ export default function PerfumeBottle({ perfume, size }: Props) {
 
   const uid = `b-${perfume.id.replace(/[^a-z0-9]/gi, '')}`;
 
-  // SVG dimensions: se fluid, deixa 100% e usa preserveAspectRatio.
+  // No modo fluid, omite width/height inline — CSS .bottle-glow > svg cuida.
   const svgProps = isFluid
-    ? { width: '100%' as const, height: '100%' as const }
+    ? {}
     : { width: size, height: (size! * 140) / 100 };
 
   return (
@@ -136,7 +125,6 @@ export default function PerfumeBottle({ perfume, size }: Props) {
       viewBox="0 0 100 140"
       preserveAspectRatio="xMidYMax meet"
       {...svgProps}
-      style={{ overflow: 'visible' }}
       aria-label={`${perfume.marca} ${perfume.nome}`}
     >
       <defs>
@@ -161,13 +149,9 @@ export default function PerfumeBottle({ perfume, size }: Props) {
         </clipPath>
       </defs>
 
-      {/* Sombra projetada na prateleira */}
       <ellipse cx="50" cy="138" rx="34" ry="3" fill="#4a3520" opacity="0.32" />
-
-      {/* Corpo do frasco (vidro vazio) */}
       <path d={s.bodyD} fill="#000" opacity="0.18" />
 
-      {/* Líquido dentro do frasco com clip-path */}
       <g clipPath={`url(#clip-${uid})`}>
         <rect
           x="0"
@@ -179,50 +163,20 @@ export default function PerfumeBottle({ perfume, size }: Props) {
         <ellipse cx="50" cy={liquidTop} rx="32" ry="2.5" fill={highlight} opacity="0.6" />
       </g>
 
-      {/* Brilho do vidro (overlay) */}
       <path d={s.bodyD} fill={`url(#glass-${uid})`} />
       <path d={s.bodyD} fill="none" stroke="#ffffff" strokeOpacity="0.15" strokeWidth="0.6" />
 
-      {/* Etiqueta translúcida */}
-      <rect
-        x="32"
-        y={s.labelY}
-        width="36"
-        height="18"
-        rx="1"
-        fill="#fdf6e8"
-        opacity="0.92"
-      />
-      <text
-        x="50"
-        y={s.labelY + 8}
-        textAnchor="middle"
-        fontSize="4"
-        fontFamily="Georgia, serif"
-        fill="#3d2419"
-        fontStyle="italic"
-      >
+      <rect x="32" y={s.labelY} width="36" height="18" rx="1" fill="#fdf6e8" opacity="0.92" />
+      <text x="50" y={s.labelY + 8} textAnchor="middle" fontSize="4" fontFamily="Georgia, serif" fill="#3d2419" fontStyle="italic">
         {perfume.marca.slice(0, 14)}
       </text>
-      <text
-        x="50"
-        y={s.labelY + 14}
-        textAnchor="middle"
-        fontSize="3.2"
-        fontFamily="Georgia, serif"
-        fill="#6b4226"
-      >
+      <text x="50" y={s.labelY + 14} textAnchor="middle" fontSize="3.2" fontFamily="Georgia, serif" fill="#6b4226">
         {perfume.nome.slice(0, 16)}
       </text>
 
-      {/* Pescoço do frasco */}
       <rect x="42" y="44" width="16" height="6" fill="#000" opacity="0.35" />
-
-      {/* Tampa */}
       <path d={s.capD} fill={`url(#cap-${uid})`} />
       <path d={s.capD} fill="none" stroke="#000" strokeOpacity="0.25" strokeWidth="0.5" />
-
-      {/* Brilho na tampa */}
       <rect
         x={shape === 'flask' ? 41 : 38}
         y={shape === 'flask' ? 20 : 26}
