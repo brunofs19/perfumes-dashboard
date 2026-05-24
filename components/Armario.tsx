@@ -10,10 +10,6 @@ interface Props {
   perfumes: Perfume[];
 }
 
-const STEP_OFFSET_PX = 90;   // deslocamento horizontal por nível (desktop)
-const STEP_DEPTH_PX = 130;   // recuo Z (profundidade) por nível
-const STEP_SCALE_DECAY = 0.035; // redução de escala por nível
-
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
@@ -21,7 +17,7 @@ function chunk<T>(arr: T[], size: number): T[][] {
 }
 
 /**
- * Quantos perfumes por prateleira, em função da largura.
+ * Quantos perfumes por prateleira em função da largura.
  * Mobile (<640): 2 / sm (640-1024): 3 / lg (1024-1280): 4 / xl (>=1280): 5
  */
 function usePerShelf() {
@@ -57,13 +53,8 @@ export default function Armario({ perfumes }: Props) {
     });
   }, [perfumes, filters]);
 
-  const shelves = useMemo(() => {
-    const all = chunk(filtered, perShelf);
-    return all.reverse();
-  }, [filtered, perShelf]);
-
-  const totalLevels = shelves.length;
-  const isMobile = perShelf <= 2;
+  // Ordem natural — sem reverse, sem escada 3D
+  const shelves = useMemo(() => chunk(filtered, perShelf), [filtered, perShelf]);
 
   return (
     <>
@@ -85,28 +76,9 @@ export default function Armario({ perfumes }: Props) {
           )}
 
           {shelves.map((row, idx) => {
-            const levelFromTop = idx;
-            const levelFromBottom = totalLevels - 1 - idx;
-
-            const offsetPx = isMobile ? 0 : levelFromTop * STEP_OFFSET_PX;
-            const translateZ = isMobile ? 0 : -STEP_DEPTH_PX * levelFromTop;
-            const scale = isMobile ? 1 : 1 - STEP_SCALE_DECAY * levelFromTop;
-
-            const isElevated = levelFromBottom > 0 && !isMobile;
-
+            const isLast = idx === shelves.length - 1;
             return (
-              <div
-                key={idx}
-                className={`shelf-row ${isElevated ? 'is-elevated' : ''}`}
-                style={{
-                  marginLeft: `${offsetPx}px`,
-                  transform: `translateZ(${translateZ}px) scale(${scale})`,
-                  transformOrigin: '50% 100%',
-                  zIndex: levelFromBottom,
-                }}
-                aria-label={`Prateleira nível ${levelFromBottom + 1} de ${totalLevels}`}
-              >
-                {!isMobile && <div className="step-glow" aria-hidden="true" />}
+              <div key={idx} className="shelf-row">
                 <div className="shelf-content">
                   {row.map((p) => (
                     <PerfumeSlot key={p.id} perfume={p} onClick={() => setSelected(p)} />
@@ -116,9 +88,7 @@ export default function Armario({ perfumes }: Props) {
                       <div key={`empty-${i}`} className="empty-slot" />
                     ))}
                 </div>
-                <div className="shelf-plank" aria-hidden="true" />
-                {isElevated && <div className="step-face" aria-hidden="true" />}
-                {!isMobile && <div className="shelf-shadow" aria-hidden="true" />}
+                {!isLast && <div className="shelf-plank" aria-hidden="true" />}
               </div>
             );
           })}
