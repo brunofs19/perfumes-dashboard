@@ -16,8 +16,13 @@ export default function PerfumeSlot({ perfume, onClick }: Props) {
       aria-label={`Ver detalhes de ${perfume.marca} ${perfume.nome}`}
     >
       <div className="bottle-wrap">
-        <div className="bottle-glow">
-          <PerfumeBottle perfume={perfume} />
+        <div className="bottle-3d">
+          <div className="bottle-glow">
+            <PerfumeBottle perfume={perfume} />
+          </div>
+          <div className="bottle-reflection" aria-hidden="true">
+            <PerfumeBottle perfume={perfume} />
+          </div>
         </div>
       </div>
 
