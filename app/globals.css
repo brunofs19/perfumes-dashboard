@@ -38,16 +38,17 @@ html, body {
   mix-blend-mode: multiply;
 }
 
-/* === ARMÁRIO (moldura externa) === */
+/* === ARMÁRIO (moldura externa CREMOSA) === */
 .armario-cabinet {
   position: relative;
   padding: 12px 12px 16px;
   border-radius: 14px;
   background: linear-gradient(180deg, #f0e8d4 0%, #e0d3b8 100%);
   box-shadow:
-    inset 0 0 0 2px rgba(184, 153, 104, 0.4),
-    inset 0 0 0 4px rgba(255, 255, 255, 0.6),
-    0 30px 60px -20px rgba(101, 67, 33, 0.25);
+    inset 0 0 0 2px rgba(184, 153, 104, 0.5),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.7),
+    0 40px 80px -20px rgba(60, 38, 18, 0.55),
+    0 16px 32px -8px rgba(60, 38, 18, 0.35);
   overflow: visible;
 }
 
@@ -70,34 +71,76 @@ html, body {
   border-radius: 8px;
   border: 1px solid rgba(184, 153, 104, 0.35);
   pointer-events: none;
+  z-index: 1;
 }
 
 @media (min-width: 640px) {
   .armario-cabinet::before { inset: 10px; }
 }
 
-.armario-cabinet::after {
+/* === INTERIOR ESCURO DE MADEIRA === */
+.armario-frame {
+  position: relative;
+  padding: 28px 14px 32px;
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(80, 50, 25, 0.45) 0%, transparent 60%),
+    linear-gradient(180deg, #3d2818 0%, #2a1a0c 50%, #1f1208 100%);
+  box-shadow:
+    inset 0 4px 14px rgba(0, 0, 0, 0.55),
+    inset 0 -3px 10px rgba(0, 0, 0, 0.45),
+    inset 5px 0 14px rgba(0, 0, 0, 0.4),
+    inset -5px 0 14px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .armario-frame {
+    padding: 36px 20px 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .armario-frame {
+    padding: 44px 24px 48px;
+  }
+}
+
+/* Iluminação dourada caindo do topo (luz embutida da galeria) */
+.armario-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 65%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 220, 140, 0.35) 0%, rgba(255, 220, 140, 0.14) 28%, transparent 55%),
+    linear-gradient(180deg, rgba(255, 220, 140, 0.2) 0%, transparent 100%);
+  mix-blend-mode: screen;
+}
+
+/* Textura sutil de veios da madeira escura + grain horizontal/vertical */
+.armario-frame::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 14px;
   pointer-events: none;
   background:
     repeating-linear-gradient(
       90deg,
       transparent 0px,
-      transparent 4px,
-      rgba(139, 95, 47, 0.04) 4px,
-      rgba(139, 95, 47, 0.04) 5px
+      transparent 80px,
+      rgba(255, 220, 140, 0.03) 80px,
+      rgba(255, 220, 140, 0.03) 82px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 60px,
+      rgba(0, 0, 0, 0.06) 60px,
+      rgba(0, 0, 0, 0.06) 61px
     );
-  mix-blend-mode: multiply;
-  opacity: 0.7;
-}
-
-/* === FRAME PLANO (sem perspective, sem escada 3D) === */
-.armario-frame {
-  position: relative;
-  padding: 0;
+  mix-blend-mode: overlay;
 }
 
 /* === SHELF-ROW UNIFORME === */
@@ -135,18 +178,23 @@ html, body {
   }
 }
 
-/* === PRATELEIRA UNIFORME (mesma para todas as linhas) === */
+/* === PRATELEIRA 3D (tampo + frente + sombra projetada) === */
 .shelf-plank {
   position: relative;
-  height: 12px;
-  border-radius: 2px;
+  height: 14px;
+  border-radius: 2px 2px 1px 1px;
   background:
-    linear-gradient(180deg, #d4c298 0%, #b89e6f 50%, #8a6f47 100%);
+    linear-gradient(180deg, #e8d4a8 0%, #c8a875 40%, #8a6f47 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 240, 200, 0.7),
-    inset 0 -1px 2px rgba(74, 53, 32, 0.35),
-    0 4px 8px -2px rgba(74, 53, 32, 0.25);
-  margin: 4px 8px 18px;
+    /* Highlight no topo (luz refletindo na tábua) */
+    inset 0 1px 0 rgba(255, 245, 210, 0.9),
+    /* Borda frontal saliente (volume da tábua) */
+    inset 0 -3px 0 rgba(40, 22, 8, 0.55),
+    /* Sombra projetada CAINDO na parede escura */
+    0 10px 14px -2px rgba(0, 0, 0, 0.6),
+    0 3px 5px rgba(0, 0, 0, 0.4);
+  margin: 4px 6px 24px;
+  z-index: 2;
 }
 
 .shelf-plank::before {
@@ -158,16 +206,16 @@ html, body {
       90deg,
       transparent 0px,
       transparent 22px,
-      rgba(74, 53, 32, 0.08) 22px,
-      rgba(74, 53, 32, 0.08) 23px
+      rgba(60, 38, 18, 0.18) 22px,
+      rgba(60, 38, 18, 0.18) 23px
     );
   border-radius: inherit;
 }
 
 @media (min-width: 640px) {
   .shelf-plank {
-    height: 14px;
-    margin: 4px 8px 22px;
+    height: 16px;
+    margin: 6px 8px 28px;
   }
 }
 
@@ -193,12 +241,17 @@ html, body {
 }
 
 .perfume-slot:hover {
-  background-color: rgba(255, 250, 230, 0.6);
+  background-color: rgba(255, 240, 200, 0.06);
 }
 
 .perfume-slot:focus-visible {
-  outline: 1px solid rgba(184, 153, 104, 0.7);
+  outline: 1px solid rgba(232, 200, 120, 0.6);
   outline-offset: 2px;
+}
+
+/* Labels precisam de text-shadow no fundo escuro para legibilidade */
+.perfume-slot > div:last-child {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 /* Container do frasco — altura fixa por breakpoint
@@ -276,11 +329,11 @@ html, body {
   margin-top: 1px;
   transform: scaleY(-1) rotateY(-3deg);
   transform-origin: 50% 0%;
-  opacity: 0.55;
+  opacity: 0.4;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 85%);
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 85%);
-  filter: blur(0.4px);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 80%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 80%);
+  filter: blur(0.5px);
 }
 
 .bottle-reflection > img,
