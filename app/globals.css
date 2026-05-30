@@ -263,10 +263,10 @@ html, body {
 }
 
 /* Container do frasco — altura fixa por breakpoint
-   Acomoda o frasco (80%) + reflexo espelhado (20%) */
+   Acomoda o frasco (94%) + reflexo espelhado (6%) */
 .bottle-wrap {
   width: 100%;
-  height: 170px;
+  height: 150px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -276,15 +276,15 @@ html, body {
 }
 
 @media (min-width: 640px) {
-  .bottle-wrap { height: 185px; }
+  .bottle-wrap { height: 165px; }
 }
 
 @media (min-width: 1024px) {
-  .bottle-wrap { height: 200px; }
+  .bottle-wrap { height: 180px; }
 }
 
 @media (min-width: 1280px) {
-  .bottle-wrap { height: 210px; }
+  .bottle-wrap { height: 190px; }
 }
 
 /* Wrapper 3D que segura frasco + reflexo */
@@ -301,7 +301,7 @@ html, body {
 
 /* === FRASCO === */
 .bottle-glow {
-  height: 88%;
+  height: 94%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -329,7 +329,7 @@ html, body {
 
 /* === REFLEXO ESPELHADO === */
 .bottle-reflection {
-  height: 12%;
+  height: 6%;
   width: 100%;
   display: flex;
   align-items: flex-start;
