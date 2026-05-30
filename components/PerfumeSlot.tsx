@@ -26,7 +26,7 @@ export default function PerfumeSlot({ perfume, onClick }: Props) {
         </div>
       </div>
 
-      <div className="mt-0 sm:mt-0.5 text-center px-1 max-w-full w-full">
+      <div className="-mt-3 sm:-mt-4 text-center px-1 max-w-full w-full">
         <div className="text-[13px] sm:text-[14px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-oak-500 font-body truncate">
           {perfume.marca}
         </div>
